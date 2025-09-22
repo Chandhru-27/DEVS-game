@@ -18,6 +18,10 @@ app.add_middleware(
 def health_check():
     return {"status": "ok", "message": "Backend is running"}
 
+@app.options("/players")
+def players_options():
+    return {"message": "CORS preflight handled"}
+
 @app.get("/players")
 def get_players() ->dict[str, list[Player]]:
     players = get_all_players()
