@@ -3,42 +3,44 @@ import Link from "next/link";
 
 const Home = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-midnight to-[#1a1a1a] relative px-6 md:px-8">
-      {/* Animated background elements */}
+    <div className="min-h-screen flex items-center justify-center relative px-6 md:px-8">
+      {/* Cyberpunk animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-cyberpunkFloat cyberpunk-glow"></div>
         <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-float"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/8 rounded-full blur-3xl animate-cyberpunkFloat cyberpunk-glow"
           style={{ animationDelay: "2s" }}
         ></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse-slow"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-pink-500/12 rounded-full blur-2xl animate-neonPulse cyberpunk-glow"></div>
       </div>
 
-      <div className="text-center relative h-full max-h-100vh  z-10 max-w-4xl mx-auto flex flex-col justify-center items-center gap-10">
+      <div className="text-center relative h-full max-h-100vh z-10 max-w-4xl mx-auto flex flex-col justify-center items-center gap-10">
         {/* Main Title */}
         <div className="mb-16">
-          <h1 className="text-8xl md:text-9xl font-black text-white mb-8 tracking-wider drop-shadow-2xl animate-glow">
+          <h1 className="text-8xl md:text-9xl font-black mb-8 tracking-wider neon-purple cyberpunk-text animate-pulse">
             DEVS
           </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-white/0 via-white to-white/0 mx-auto"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto cyberpunk-glow"></div>
         </div>
 
         {/* Subtitle */}
         <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl text-white font-light tracking-wide">
+          <h2 className="text-4xl md:text-5xl font-light tracking-wide neon-cyan cyberpunk-text">
             Real-time Gaming Leaderboard
           </h2>
         </div>
 
-        {/* Modern Button */}
+        {/* Cyberpunk Button */}
         <div className="flex justify-center">
           <Link
             href="/leaderboard"
-            className="group relative inline-flex items-center justify-center gap-3 bg-white text-black font-bold text-lg px-8 py-4 border-2 border-white hover:bg-transparent hover:text-white transition-all duration-300"
+            className="group relative inline-flex items-center justify-center gap-3 cyberpunk-bg cyberpunk-border rounded-lg px-8 py-4 font-bold text-lg text-white hover:from-purple-600/20 hover:to-cyan-600/20 transition-all duration-300 cyberpunk-glow"
           >
-            <span>View Leaderboard</span>
+            <span className="neon-purple cyberpunk-text group-hover:neon-cyan transition-colors duration-300">
+              View Leaderboard
+            </span>
             <svg
-              className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
+              className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300 neon-cyan"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -51,6 +53,15 @@ const Home = () => {
               />
             </svg>
           </Link>
+        </div>
+
+        {/* Additional Cyberpunk Elements */}
+        <div className="mt-16 flex items-center gap-4 neon-cyan cyberpunk-text">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse cyberpunk-glow"></div>
+          <span className="text-sm font-medium tracking-wider">
+            LIVE DATA STREAM
+          </span>
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse cyberpunk-glow"></div>
         </div>
       </div>
     </div>
