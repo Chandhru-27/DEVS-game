@@ -48,7 +48,7 @@ def add_player(player: Player):
 def get_all_players():
     db = SessionLocal()
     try:
-        return db.query(PlayerDB).all()
+        return db.query(PlayerDB).order_by(PlayerDB.score.desc()).all()
     finally:
         db.close()
 
