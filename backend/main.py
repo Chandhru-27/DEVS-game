@@ -9,11 +9,15 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.environ.get("ALLOWED_ORIGIN")],
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def health_check():
+    return {"status": "ok", "message": "Backend is running"}
+
 @app.get("/players")
 def get_players() ->dict[str, list[Player]]:
     players = get_all_players()
