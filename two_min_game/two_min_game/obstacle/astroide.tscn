@@ -1,0 +1,48 @@
+[gd_scene load_steps=9 format=3 uid="uid://d0q2sa7samihc"]
+
+[ext_resource type="Texture2D" uid="uid://bhsdyek7ha5hl" path="res://obstacle/FB001.png" id="1_kq350"]
+[ext_resource type="Script" uid="uid://c3jfkputmf0w5" path="res://obstacle/astroide.gd" id="1_qg60f"]
+[ext_resource type="Texture2D" uid="uid://bldx3do548d3o" path="res://obstacle/FB002.png" id="2_qg60f"]
+[ext_resource type="Texture2D" uid="uid://cs8cs6q2ckggr" path="res://obstacle/FB003.png" id="3_1mssl"]
+[ext_resource type="Texture2D" uid="uid://dyfjl8gbkypks" path="res://obstacle/FB004.png" id="4_vt3b3"]
+[ext_resource type="Texture2D" uid="uid://c3yetg6kdxtgw" path="res://obstacle/FB005.png" id="5_hfnmg"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xmmhc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_kq350")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_qg60f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_1mssl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_vt3b3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_hfnmg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kq350"]
+
+[node name="Astroide" type="Area2D"]
+script = ExtResource("1_qg60f")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_xmmhc")
+autoplay = "default"
+frame_progress = 0.22975926
+flip_h = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-11, 0)
+shape = SubResource("RectangleShape2D_kq350")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

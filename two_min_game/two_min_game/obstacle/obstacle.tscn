@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://wmi3w67fdvei"]
+
+[ext_resource type="Script" uid="uid://dn86uawbv1gqi" path="res://obstacle/obstacle.gd" id="1_utmkd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h0gnf"]
+
+[node name="Obstacle" type="Area2D"]
+script = ExtResource("1_utmkd")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 20
+text = "x9"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_h0gnf")
