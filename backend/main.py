@@ -1,8 +1,19 @@
 from fastapi import FastAPI
 from models import Player, UpdateScore
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 from database import add_player, get_all_players, get_player_by_id, update_player_score
+import os
+load_dotenv()
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[os.environ.get("ALLOWED_ORIGIN")],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.get("/players")
 def get_players() ->dict[str, list[Player]]:
     players = get_all_players()
