@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://vdach74u4bm3"]
+
+[ext_resource type="PackedScene" uid="uid://rg0qx3ee4v63" path="res://cloud/parallex_bg.tscn" id="1_e2o6t"]
+[ext_resource type="Script" uid="uid://b6vk5o7cwbtjw" path="res://game.gd" id="1_feb5d"]
+[ext_resource type="PackedScene" uid="uid://dt6jrfnqckdph" path="res://rocket/rocket.tscn" id="2_feb5d"]
+[ext_resource type="Script" uid="uid://cxeqfk0mfl3r4" path="res://obstacle_spawner.gd" id="4_fc0e3"]
+[ext_resource type="Script" uid="uid://ycqr67vnmep6" path="res://rocket/camera.gd" id="4_ryrav"]
+[ext_resource type="PackedScene" uid="uid://wmi3w67fdvei" path="res://obstacle/obstacle.tscn" id="5_7jktm"]
+[ext_resource type="Script" uid="uid://yvuevgjwg01w" path="res://obstacle/astroid_spawner.gd" id="7_eow3j"]
+[ext_resource type="PackedScene" uid="uid://d0q2sa7samihc" path="res://obstacle/astroide.tscn" id="8_j5wjh"]
+
+[node name="Game" type="Node2D" groups=["game"]]
+script = ExtResource("1_feb5d")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="ParallexBg" parent="Environment" instance=ExtResource("1_e2o6t")]
+modulate = Color(0.50534403, 0.5053441, 0.50534385, 1)
+
+[node name="Rocket" parent="Environment" instance=ExtResource("2_feb5d")]
+scale = Vector2(0.20480943, 0.18715781)
+
+[node name="ObstacleSpawner" type="Node2D" parent="Environment"]
+script = ExtResource("4_fc0e3")
+obstacle_scene = ExtResource("5_7jktm")
+
+[node name="Camera2D" type="Camera2D" parent="Environment"]
+offset = Vector2(200, 0)
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+script = ExtResource("4_ryrav")
+
+[node name="AstroidSpawner" type="Node2D" parent="Environment"]
+script = ExtResource("7_eow3j")
+asteroid_scene = ExtResource("8_j5wjh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+offset_right = 182.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 40
+text = "Score: "
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -182.0
+offset_bottom = 60.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Time:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="GameTimer" type="Timer" parent="."]
+wait_time = 120.0
+one_shot = true
