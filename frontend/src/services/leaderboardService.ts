@@ -1,24 +1,12 @@
-import { Player, LeaderboardData } from "@/types/leaderboard";
+import { Player, LeaderboardData, BackendPlayer } from "@/types/leaderboard";
+import { apiService } from "./apiService";
 
-// Mock data for initial leaderboard
-const initialPlayers: Player[] = [
-  { rank: 1, name: "Alex Chen", score: 15420 },
-  { rank: 2, name: "Sarah Johnson", score: 14890 },
-  { rank: 3, name: "Mike Rodriguez", score: 14230 },
-  { rank: 4, name: "Emma Wilson", score: 13850 },
-  { rank: 5, name: "David Kim", score: 13520 },
-  { rank: 6, name: "Lisa Zhang", score: 13180 },
-  { rank: 7, name: "Tom Anderson", score: 12890 },
-  { rank: 8, name: "Nina Patel", score: 12540 },
-  { rank: 9, name: "Chris Taylor", score: 12200 },
-  { rank: 10, name: "Maya Singh", score: 11850 },
-];
-
-// Simulate realtime updates
+// Real-time leaderboard service with backend integration
 export class LeaderboardService {
-  private players: Player[] = [...initialPlayers];
+  private players: Player[] = [];
   private subscribers: ((data: LeaderboardData) => void)[] = [];
   private updateInterval: NodeJS.Timeout | null = null;
+  private isPolling: boolean = false;
 
   constructor() {
     this.startRealtimeUpdates();
@@ -28,11 +16,13 @@ export class LeaderboardService {
   subscribe(callback: (data: LeaderboardData) => void): () => void {
     this.subscribers.push(callback);
 
-    // Send initial data
-    callback({
-      players: this.players,
-      lastUpdated: new Date(),
-    });
+    // Send initial data if available
+    if (this.players.length > 0) {
+      callback({
+        players: this.players,
+        lastUpdated: new Date(),
+      });
+    }
 
     // Return unsubscribe function
     return () => {
@@ -40,38 +30,93 @@ export class LeaderboardService {
     };
   }
 
-  // Start simulating realtime updates
+  // Start real-time updates by polling backend
   private startRealtimeUpdates(): void {
+    // Initial fetch
+    this.fetchPlayersFromBackend();
+
+    // Poll every 3 seconds
     this.updateInterval = setInterval(() => {
-      this.simulateUpdate();
-    }, 3000 + Math.random() * 2000); // Update every 3-5 seconds
+      this.fetchPlayersFromBackend();
+    }, 3000);
   }
 
-  // Simulate a player score update
-  private simulateUpdate(): void {
-    const playerIndex = Math.floor(Math.random() * this.players.length);
-    const currentPlayer = this.players[playerIndex];
+  // Fetch players from backend API
+  private async fetchPlayersFromBackend(): Promise<void> {
+    if (this.isPolling) return; // Prevent concurrent requests
 
-    // Randomly increase score (10-100 points)
-    const scoreIncrease = Math.floor(Math.random() * 90) + 10;
-    const newScore = currentPlayer.score + scoreIncrease;
+    this.isPolling = true;
 
-    // Update the player's score
-    this.players[playerIndex] = {
-      ...currentPlayer,
-      score: newScore,
-    };
+    try {
+      const backendPlayers = await apiService.getPlayers();
+      const newPlayers = this.convertBackendPlayersToFrontend(backendPlayers);
 
-    // Re-sort players by score
-    this.players.sort((a, b) => b.score - a.score);
+      // Detect changes and update animations
+      this.processPlayerUpdates(newPlayers);
 
-    // Update ranks
-    this.players.forEach((player, index) => {
-      player.rank = index + 1;
+      // Update players list
+      this.players = newPlayers;
+
+      // Notify subscribers
+      this.notifySubscribers();
+    } catch (error) {
+      console.error("Error fetching players from backend:", error);
+
+      // If this is the first fetch and it fails, show empty state
+      if (this.players.length === 0) {
+        this.notifySubscribers();
+      }
+    } finally {
+      this.isPolling = false;
+    }
+  }
+
+  // Convert backend players to frontend format with ranks
+  private convertBackendPlayersToFrontend(
+    backendPlayers: BackendPlayer[]
+  ): Player[] {
+    // Sort by score descending and assign ranks
+    const sortedPlayers = [...backendPlayers].sort((a, b) => b.score - a.score);
+
+    return sortedPlayers.map((backendPlayer, index) => ({
+      rank: index + 1,
+      name: backendPlayer.name,
+      score: backendPlayer.score,
+      player_id: backendPlayer.player_id,
+      id: `${backendPlayer.player_id}-${backendPlayer.name}`,
+      previousRank: undefined,
+      previousScore: undefined,
+      isNew: false,
+      rankChange: "same" as const,
+    }));
+  }
+
+  // Process player updates and detect changes for animations
+  private processPlayerUpdates(newPlayers: Player[]): void {
+    const oldPlayerMap = new Map(this.players.map((p) => [p.player_id, p]));
+
+    newPlayers.forEach((newPlayer) => {
+      const oldPlayer = oldPlayerMap.get(newPlayer.player_id);
+
+      if (oldPlayer) {
+        // Player exists - check for changes
+        if (oldPlayer.score !== newPlayer.score) {
+          newPlayer.previousScore = oldPlayer.score;
+        }
+
+        if (oldPlayer.rank !== newPlayer.rank) {
+          newPlayer.previousRank = oldPlayer.rank;
+          newPlayer.rankChange =
+            newPlayer.rank < oldPlayer.rank ? "up" : "down";
+        } else {
+          newPlayer.rankChange = "same";
+        }
+      } else {
+        // New player
+        newPlayer.isNew = true;
+        newPlayer.rankChange = "same";
+      }
     });
-
-    // Notify subscribers
-    this.notifySubscribers();
   }
 
   // Notify all subscribers of updates
@@ -84,6 +129,11 @@ export class LeaderboardService {
     this.subscribers.forEach((callback) => {
       callback(data);
     });
+  }
+
+  // Get current players (for external access)
+  getCurrentPlayers(): Player[] {
+    return [...this.players];
   }
 
   // Clean up when service is destroyed

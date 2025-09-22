@@ -12,14 +12,22 @@ body {
 }
 
 body {
-  background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+  background: linear-gradient(
+    135deg,
+    #000000 0%,
+    #0a0a0a 25%,
+    #0d0d0d 50%,
+    #0a0a0a 75%,
+    #000000 100%
+  );
   color: #ffffff;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
   position: relative;
+  overflow-x: hidden;
 }
 
-/* Animated background with particles and dots */
+/* Cyberpunk animated background with neon particles */
 body::before {
   content: "";
   position: fixed;
@@ -27,23 +35,28 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
-    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
-    radial-gradient(
-      1px 1px at 130px 80px,
-      rgba(255, 255, 255, 0.6),
+  background-image: radial-gradient(
+      1px 1px at 20px 30px,
+      rgba(139, 92, 246, 0.2),
       transparent
     ),
-    radial-gradient(2px 2px at 160px 30px, #ffffff, transparent);
+    radial-gradient(1px 1px at 40px 70px, rgba(139, 92, 246, 0.15), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(6, 182, 212, 0.2), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(6, 182, 212, 0.1), transparent),
+    radial-gradient(
+      1px 1px at 160px 30px,
+      rgba(236, 72, 153, 0.15),
+      transparent
+    ),
+    radial-gradient(1px 1px at 200px 50px, rgba(236, 72, 153, 0.1), transparent);
   background-repeat: repeat;
-  background-size: 200px 100px;
-  animation: float 20s linear infinite;
+  background-size: 300px 200px;
+  animation: cyberpunkFloat 30s linear infinite;
   pointer-events: none;
   z-index: -1;
 }
 
-/* Additional twinkling dots */
+/* Cyberpunk grid overlay */
 body::after {
   content: "";
   position: fixed;
@@ -51,45 +64,258 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(1px 1px at 50px 50px, #ffffff, transparent),
-    radial-gradient(
-      1px 1px at 100px 100px,
-      rgba(255, 255, 255, 0.8),
-      transparent
+  background-image: linear-gradient(
+      rgba(139, 92, 246, 0.03) 1px,
+      transparent 1px
     ),
-    radial-gradient(1px 1px at 150px 25px, #ffffff, transparent),
-    radial-gradient(
-      1px 1px at 200px 75px,
-      rgba(255, 255, 255, 0.6),
-      transparent
-    );
-  background-repeat: repeat;
-  background-size: 250px 125px;
-  animation: twinkle 3s ease-in-out infinite alternate;
+    linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: cyberpunkGrid 15s linear infinite;
   pointer-events: none;
   z-index: -1;
 }
 
-@keyframes float {
+@keyframes cyberpunkFloat {
   0% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0px) translateX(0px) rotate(0deg);
   }
-  33% {
-    transform: translateY(-30px) translateX(30px);
+  25% {
+    transform: translateY(-20px) translateX(20px) rotate(90deg);
   }
-  66% {
-    transform: translateY(30px) translateX(-30px);
+  50% {
+    transform: translateY(20px) translateX(-20px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(-10px) translateX(10px) rotate(270deg);
   }
   100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0px) translateX(0px) rotate(360deg);
   }
 }
 
-@keyframes twinkle {
+@keyframes cyberpunkGrid {
   0% {
+    transform: translate(0, 0);
+    opacity: 0.1;
+  }
+  50% {
     opacity: 0.3;
   }
   100% {
+    transform: translate(50px, 50px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes neonPulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor,
+      0 0 15px currentColor;
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+}
+
+/* Leaderboard Animation Keyframes */
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutToTop {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes slideOutToBottom {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes rankUp {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+  }
+}
+
+@keyframes rankDown {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3);
+  }
+  50% {
+    transform: scale(0.97);
+    box-shadow: 0 0 0 6px rgba(236, 72, 153, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+  }
+}
+
+@keyframes scoreIncrease {
+  0% {
+    color: #06b6d4;
+    transform: scale(1);
+    text-shadow: 0 0 4px #06b6d4;
+  }
+  50% {
+    color: #8b5cf6;
+    transform: scale(1.05);
+    text-shadow: 0 0 6px #8b5cf6;
+  }
+  100% {
+    color: #ffffff;
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes newPlayer {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+    background-color: rgba(139, 92, 246, 0.2);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02) translateY(0);
+    background-color: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
     opacity: 1;
   }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Animation utility classes */
+.animate-slide-in-top {
+  animation: slideInFromTop 0.4s ease-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInFromBottom 0.4s ease-out;
+}
+
+.animate-slide-out-top {
+  animation: slideOutToTop 0.3s ease-in;
+}
+
+.animate-slide-out-bottom {
+  animation: slideOutToBottom 0.3s ease-in;
+}
+
+.animate-rank-up {
+  animation: rankUp 0.6s ease-out;
+}
+
+.animate-rank-down {
+  animation: rankDown 0.6s ease-out;
+}
+
+.animate-score-increase {
+  animation: scoreIncrease 0.8s ease-out;
+}
+
+.animate-new-player {
+  animation: newPlayer 0.8s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Cyberpunk utility classes */
+.cyberpunk-glow {
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.2);
+}
+
+.cyberpunk-text {
+  text-shadow: 0 0 4px currentColor;
+}
+
+.neon-purple {
+  color: #8b5cf6;
+  text-shadow: 0 0 4px #8b5cf6;
+}
+
+.neon-cyan {
+  color: #06b6d4;
+  text-shadow: 0 0 4px #06b6d4;
+}
+
+.neon-pink {
+  color: #ec4899;
+  text-shadow: 0 0 4px #ec4899;
+}
+
+.cyberpunk-border {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.cyberpunk-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.05) 0%,
+    rgba(6, 182, 212, 0.05) 100%
+  );
+  backdrop-filter: blur(10px);
 }
