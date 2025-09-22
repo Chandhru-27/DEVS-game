@@ -3,6 +3,7 @@ from pydantic import BaseModel , Field
 
 class Player(BaseModel):
     name: str = Field(min_length=3, max_length=50)
+    player_id: int
     score: int
 
 class UpdateScore(BaseModel):

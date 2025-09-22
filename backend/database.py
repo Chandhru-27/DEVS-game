@@ -28,13 +28,20 @@ def create_tables():
 def add_player(player: Player):
     db = SessionLocal()
     try:
+        #check id player already exists
+        existing_player = db.query(PlayerDB).filter(PlayerDB.player_id == player.player_id).first()
+        if existing_player:
+            return False
         db_player = PlayerDB(
-            name=player.name
+            name=player.name,
+            player_id = player.player_id
         )
         db.add(db_player)
         db.commit()
         db.refresh(db_player)
-        return db_player
+        return True
+    except Exception as e:
+        return False
     finally:
         db.close()
 

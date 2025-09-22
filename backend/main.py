@@ -12,8 +12,8 @@ def get_players() ->dict[str, list[Player]]:
     
 @app.post("/players/create")
 def create_player(player: Player):
-    add_player(player)
-    return {"success": True}
+    status = add_player(player) 
+    return {"success": status}
 
 @app.post("/players/update")
 def update_scores(score: UpdateScore):
