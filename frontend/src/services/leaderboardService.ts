@@ -1,7 +1,6 @@
 import { Player, LeaderboardData, BackendPlayer } from "@/types/leaderboard";
 import { apiService } from "./apiService";
 
-// Real-time leaderboard service with backend integration
 export class LeaderboardService {
   private players: Player[] = [];
   private subscribers: ((data: LeaderboardData) => void)[] = [];
@@ -12,11 +11,9 @@ export class LeaderboardService {
     this.startRealtimeUpdates();
   }
 
-  // Subscribe to leaderboard updates
   subscribe(callback: (data: LeaderboardData) => void): () => void {
     this.subscribers.push(callback);
 
-    // Send initial data if available
     if (this.players.length > 0) {
       callback({
         players: this.players,
@@ -24,24 +21,19 @@ export class LeaderboardService {
       });
     }
 
-    // Return unsubscribe function
     return () => {
       this.subscribers = this.subscribers.filter((sub) => sub !== callback);
     };
   }
 
-  // Start real-time updates by polling backend
   private startRealtimeUpdates(): void {
-    // Initial fetch
     this.fetchPlayersFromBackend();
 
-    // Poll every 3 seconds
     this.updateInterval = setInterval(() => {
       this.fetchPlayersFromBackend();
     }, 3000);
   }
 
-  // Fetch players from backend API
   private async fetchPlayersFromBackend(): Promise<void> {
     if (this.isPolling) return; // Prevent concurrent requests
 
@@ -51,18 +43,14 @@ export class LeaderboardService {
       const backendPlayers = await apiService.getPlayers();
       const newPlayers = this.convertBackendPlayersToFrontend(backendPlayers);
 
-      // Detect changes and update animations
       this.processPlayerUpdates(newPlayers);
 
-      // Update players list
       this.players = newPlayers;
 
-      // Notify subscribers
       this.notifySubscribers();
     } catch (error) {
       console.error("Error fetching players from backend:", error);
 
-      // If this is the first fetch and it fails, show empty state
       if (this.players.length === 0) {
         this.notifySubscribers();
       }
@@ -71,11 +59,9 @@ export class LeaderboardService {
     }
   }
 
-  // Convert backend players to frontend format with ranks
   private convertBackendPlayersToFrontend(
     backendPlayers: BackendPlayer[]
   ): Player[] {
-    // Sort by score descending and assign ranks
     const sortedPlayers = [...backendPlayers].sort((a, b) => b.score - a.score);
 
     return sortedPlayers.map((backendPlayer, index) => ({
@@ -91,7 +77,6 @@ export class LeaderboardService {
     }));
   }
 
-  // Process player updates and detect changes for animations
   private processPlayerUpdates(newPlayers: Player[]): void {
     const oldPlayerMap = new Map(this.players.map((p) => [p.player_id, p]));
 
@@ -99,7 +84,6 @@ export class LeaderboardService {
       const oldPlayer = oldPlayerMap.get(newPlayer.player_id);
 
       if (oldPlayer) {
-        // Player exists - check for changes
         if (oldPlayer.score !== newPlayer.score) {
           newPlayer.previousScore = oldPlayer.score;
         }
@@ -112,14 +96,12 @@ export class LeaderboardService {
           newPlayer.rankChange = "same";
         }
       } else {
-        // New player
         newPlayer.isNew = true;
         newPlayer.rankChange = "same";
       }
     });
   }
 
-  // Notify all subscribers of updates
   private notifySubscribers(): void {
     const data: LeaderboardData = {
       players: this.players,
@@ -131,12 +113,10 @@ export class LeaderboardService {
     });
   }
 
-  // Get current players (for external access)
   getCurrentPlayers(): Player[] {
     return [...this.players];
   }
 
-  // Clean up when service is destroyed
   destroy(): void {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
@@ -146,5 +126,4 @@ export class LeaderboardService {
   }
 }
 
-// Create a singleton instance
 export const leaderboardService = new LeaderboardService();

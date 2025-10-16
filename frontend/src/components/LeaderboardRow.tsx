@@ -77,12 +77,11 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
     <div
       className={`group grid grid-cols-3 gap-6 p-6 border-b border-purple-400/20 hover:bg-gradient-to-r hover:from-purple-900/10 hover:to-cyan-900/10 transition-all duration-300 min-h-[8vh] ${animationClass}`}
       style={{
-        transform: "translateZ(0)", // Force hardware acceleration
+        transform: "translateZ(0)",
         willChange: "transform, opacity",
       }}
       data-player-id={player.player_id}
     >
-      {/* Rank Column */}
       <div className="flex items-center justify-center gap-6">
         <div className="relative">
           <div
@@ -101,7 +100,6 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
               {getTrophyEmoji(player.rank)}
             </div>
           )}
-          {/* Rank change indicator */}
           {player.rankChange && player.rankChange !== "same" && (
             <div className="absolute -top-1 -left-1 text-lg">
               {getRankChangeIndicator()}
@@ -110,7 +108,6 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
         </div>
       </div>
 
-      {/* Name Column */}
       <div className="flex items-center justify-center gap-4">
         <div className="w-12 h-12 bg-gradient-to-br from-purple-600/20 to-cyan-600/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:from-purple-600/30 group-hover:to-cyan-600/30 cyberpunk-border">
           <svg
@@ -137,7 +134,6 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
         </div>
       </div>
 
-      {/* Score Column */}
       <div className="flex items-center justify-center">
         <ScoreCounter
           score={player.score}

@@ -5,6 +5,7 @@ import { Player, LeaderboardData } from "@/types/leaderboard";
 import { leaderboardService } from "@/services/leaderboardService";
 import { useLeaderboardAnimations } from "@/hooks/useLeaderboardAnimations";
 import LeaderboardRow from "./LeaderboardRow";
+import QRCodeSection from "./QRCodeSection";
 
 const Leaderboard: React.FC = () => {
   const [data, setData] = useState<LeaderboardData>({
@@ -21,7 +22,6 @@ const Leaderboard: React.FC = () => {
     getScoreAnimationClass,
   } = useLeaderboardAnimations();
 
-  // Memoize top 10 players to prevent unnecessary re-renders
   const topPlayers = useMemo(() => {
     return data.players.slice(0, 10).map((player, index) => ({
       ...player,
@@ -33,20 +33,15 @@ const Leaderboard: React.FC = () => {
     setIsLoading(true);
 
     const unsubscribe = leaderboardService.subscribe((newData) => {
-      // Process the update with animations
       processUpdate(newData);
-
-      // Update data
       setData(newData);
       setIsLoading(false);
-
-      // Update visible players with staggered animation
       const newVisiblePlayers = new Set<string>();
       newData.players.slice(0, 10).forEach((player, index) => {
         const playerId = `${player.player_id}-${player.name}-${player.rank}-${index}`;
         setTimeout(() => {
           setVisiblePlayers((prev) => new Set([...prev, playerId]));
-        }, index * 50); // Stagger the visibility
+        }, index * 50);
         newVisiblePlayers.add(playerId);
       });
     });
@@ -56,18 +51,28 @@ const Leaderboard: React.FC = () => {
     };
   }, [processUpdate]);
 
-  // Enhanced loading animation
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-400/20 border-t-purple-400 cyberpunk-glow"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/20 border-t-white"></div>
           <div
-            className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-400 animate-spin"
+            className="absolute inset-0 rounded-full border-4 border-transparent border-t-white animate-spin"
             style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
           ></div>
+          <div
+            className="absolute inset-0 rounded-full border-4 border-transparent border-r-white animate-spin"
+            style={{ animationDuration: "2s" }}
+          ></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="neon-cyan text-sm font-medium cyberpunk-text">
+            <span
+              className="text-sm font-medium bg-gradient-to-r from-gray-200 via-white to-gray-300 bg-clip-text text-transparent animate-pulse"
+              style={{
+                textShadow:
+                  "0 0 8px rgba(255, 255, 255, 0.5), 0 0 16px rgba(255, 255, 255, 0.3)",
+                animation: "shinyText 2s ease-in-out infinite",
+              }}
+            >
               Loading...
             </span>
           </div>
@@ -77,19 +82,23 @@ const Leaderboard: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4 h-screen flex flex-col gap-2 overflow-hidden">
-      {/* Header */}
-      <div className="text-center flex-shrink-0 mb-6">
-        <h1 className="text-4xl md:text-5xl font-black neon-purple mb-1 tracking-wider animate-pulse">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4 h-screen flex flex-col gap-5 overflow-hidden">
+      <QRCodeSection position="bottom-right" size="xxlarge" />
+      <div className="text-center flex-shrink-0 w-full h-[15vh] flex flex-col items-center mt-10 justify-center">
+        <h1
+          className="text-4xl md:text-5xl font-black mb-1 tracking-wider bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent"
+          style={{
+            textShadow:
+              "0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2)",
+            animation: "shinyText 3s ease-in-out infinite",
+          }}
+        >
           LEADERBOARD
         </h1>
-        <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto cyberpunk-glow"></div>
       </div>
 
-      {/* Table-style Leaderboard */}
       <div className="flex-1 overflow-hidden">
         <div className="cyberpunk-bg rounded-lg cyberpunk-border overflow-hidden transition-all duration-300">
-          {/* Table Header */}
           <div className="grid grid-cols-3 gap-6 p-4 bg-gradient-to-r from-purple-900/20 to-cyan-900/20 border-b border-purple-400/30">
             <div className="neon-cyan font-bold text-base uppercase tracking-wider text-center cyberpunk-text">
               RANK
@@ -102,7 +111,6 @@ const Leaderboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Table Body with Smooth Animations */}
           <div className="h-full relative">
             {topPlayers.map((player, index) => (
               <LeaderboardRow
@@ -115,7 +123,6 @@ const Leaderboard: React.FC = () => {
               />
             ))}
 
-            {/* Empty state for when there are no players */}
             {topPlayers.length === 0 && (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -132,7 +139,6 @@ const Leaderboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Enhanced Footer */}
       <div className="text-center flex-shrink-0">
         <div className="inline-flex items-center gap-2 cyberpunk-bg rounded-full px-3 py-1 cyberpunk-border">
           <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse cyberpunk-glow"></div>

@@ -27,10 +27,9 @@ const ScoreCounter: React.FC<ScoreCounterProps> = ({
 
       const animateScore = () => {
         const elapsed = Date.now() - startTimeRef.current;
-        const duration = 800; // Animation duration in ms
+        const duration = 800;
         const progress = Math.min(elapsed / duration, 1);
 
-        // Easing function for smooth animation
         const easeOutCubic = 1 - Math.pow(1 - progress, 3);
 
         const currentScore = Math.round(

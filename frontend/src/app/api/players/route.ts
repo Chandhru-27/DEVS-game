@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const BACKEND_URL = "https://causal-gilberte-iniyanv-b7773088.koyeb.app";
 
@@ -25,7 +25,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching players from backend:", error);
     return NextResponse.json(
       { error: "Failed to fetch players from backend" },
       { status: 500 }

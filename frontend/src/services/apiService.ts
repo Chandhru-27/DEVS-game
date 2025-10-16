@@ -1,4 +1,3 @@
-// API Service for backend integration
 const API_BASE_URL = "/api/players";
 
 export interface BackendPlayer {
@@ -18,7 +17,6 @@ class ApiService {
     this.baseUrl = baseUrl;
   }
 
-  // Get all players
   async getPlayers(): Promise<BackendPlayer[]> {
     try {
       const response = await fetch(this.baseUrl, {
@@ -41,5 +39,4 @@ class ApiService {
   }
 }
 
-// Create singleton instance
 export const apiService = new ApiService();
